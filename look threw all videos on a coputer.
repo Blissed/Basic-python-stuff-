@@ -1,0 +1,28 @@
+import os
+
+# List to store video files
+videos = [] 
+
+# Get a list of all drives/volumes on the PC 
+volumes = os.listdir('/')
+
+# Loop through each volume
+for volume in volumes:
+
+    # Walk through all directories and files on each volume
+    for root, dirs, files in os.walk(volume):
+        
+        # Check each file
+        for file in files:
+
+            # Check file extension against known video types
+            if file.endswith((".mp4", ".mov", ".avi", ".mkv")):
+
+                # Construct the full path to the video file
+                path = os.path.join(root, file)
+                
+                # Add to video list
+                videos.append(path)
+
+# Print list of all videos found
+print(videos)
