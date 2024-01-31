@@ -1,0 +1,31 @@
+import os
+import datetime
+from pathlib import Path
+
+# Get current year
+now = datetime.datetime.now()
+current_year = now.year
+
+# Set cutoff year to 10 years ago
+cutoff = current_year - 10 
+
+# List for old files
+old_files = []
+
+# Loop through all drives on computer
+drives = ['C:\\', 'D:\\', 'E:\\']
+for drive in drives:
+
+    # Walk through all files in drive
+    for root, dirs, files in os.walk(drive):
+        
+        # Check each file's modified time
+        for file in files:
+            file_path = Path(root) / file
+            
+            if file_path.stat().st_mtime < cutoff:
+                old_files.append(file_path)
+                
+# Print old files                
+for file in old_files:
+    print(file)
