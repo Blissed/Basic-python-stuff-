@@ -1,0 +1,32 @@
+import smtplib
+from email.message import EmailMessage
+import openpyxl 
+
+# Open spreadsheet
+wb = openpyxl.load_workbook('spreadsheet.xlsx')
+sheet = wb.active
+
+# Iterate through rows 
+for row in range(2, sheet.max_row+1):
+    name = sheet.cell(row, 1).value
+    email = sheet.cell(row, 2).value 
+    number = sheet.cell(row, 3).value
+    
+    # Create email message
+    msg = EmailMessage()
+    msg['Subject'] = 'Your Number' 
+    msg['From'] = 'sender@email.com'
+    msg['To'] = email
+    msg.set_content(f'Hi {name},\n\nYour number today is {number}.\n\nRegards,\nSender')
+
+    # Send email
+    with smtplib.SMTP('smtp.gmail.com', 587) as smtp:
+        smtp.ehlo()
+        smtp.starttls() 
+        smtp.ehlo()
+        
+        # Login
+        smtp.login('sender@email.com', 'password')
+        smtp.send_message(msg)
+        
+print('Emails sent!')
