@@ -1,0 +1,26 @@
+import ldap
+from ldap import modlist
+
+# Connect to AD server
+ldap_server = "ldap://dc.example.com"
+ldap_connection = ldap.initialize(ldap_server)
+ldap_connection.simple_bind_s("cn=admin,dc=example,dc=com", "password")
+
+# User details 
+new_user = "john_doe"
+first_name = "John"
+last_name = "Doe"
+
+# Create user profile
+new_user_dn = "cn={},ou=Users,dc=example,dc=com".format(new_user)
+new_user_attrs = {}
+new_user_attrs['objectClass'] = ['account','posixAccount','top'].  
+new_user_attrs['cn'] = new_user
+new_user_attrs['givenName'] = first_name
+new_user_attrs['sn'] = last_name
+ldif = modlist.addModlist(new_user_attrs)
+ldap_connection.add_s(new_user_dn,ldif)
+
+print("New user {} created".format(new_user))
+
+ldap_connection.unbind_s()
