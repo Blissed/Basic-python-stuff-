@@ -1,0 +1,21 @@
+import telnetlib
+import time
+
+ROUTER_IP = "192.168.1.1" 
+ROUTER_PASSWORD = "password"
+
+try:
+  telnet = telnetlib.Telnet(ROUTER_IP)
+  telnet.read_until(b"Password: ")
+  telnet.write(ROUTER_PASSWORD.encode('ascii') + b"\n")
+  
+  telnet.write(b"reboot\n")
+  print("Router rebooting...")
+  telnet.close()
+
+except:
+  print("Router appears to be down, waiting...")
+  time.sleep(60)
+  # Retry resetting router
+  telnet = telnetlib.Telnet(ROUTER_IP)
+  # Rest of reset steps
