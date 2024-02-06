@@ -1,0 +1,50 @@
+import pyodbc
+import xlsxwriter
+
+# Connect to POS database
+conn = pyodbc.connect('DRIVER={SQL Server};SERVER=posserver;DATABASE=posdb;UID=posuser;PWD=pospassword')
+cursor = conn.cursor()
+
+# Query to get sales data 
+query = """
+SELECT date, product_id, quantity, price
+FROM sales 
+WHERE date BETWEEN ? AND ?
+"""
+
+# Set date range
+start_date = '2023-01-01' 
+end_date = '2023-01-31'
+
+# Execute query
+cursor.execute(query, (start_date, end_date))
+
+# Print records 
+print("Printing records:")
+records = cursor.fetchall()
+for r in records:
+  print(r)
+
+# Create Excel file  
+workbook = xlsxwriter.Workbook('sales_data.xlsx')
+worksheet = workbook.add_worksheet()
+
+# Add headers
+worksheet.write(0, 0, 'Date')  
+worksheet.write(0, 1, 'Product ID')
+worksheet.write(0, 2, 'Quantity') 
+worksheet.write(0, 3, 'Price')
+
+# Write records to sheet
+row = 1 
+for r in records:
+    worksheet.write(row, 0, r[0])
+    worksheet.write(row, 1, r[1])  
+    worksheet.write(row, 2, r[2])
+    worksheet.write(row, 3, r[3])
+    row += 1
+
+workbook.close() 
+
+# Close database connection
+conn.close()
